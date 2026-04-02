@@ -1,3 +1,7 @@
+local internal = QoLInternal
+local option_fns = internal.option_fns
+local hook_fns = internal.hook_fns
+
 table.insert(option_fns,
     {
         type = "checkbox",
@@ -11,7 +15,7 @@ table.insert(option_fns,
 table.insert(hook_fns, function()
     modutil.mod.Path.Context.Wrap("KillHero", function(_, _, _)
         modutil.mod.Path.Wrap("LoadMap", function(base, argTable)
-            if not config.SpawnLocation or not lib.isEnabled(public.store, public.definition.modpack) then
+            if not store.read("SpawnLocation") or not lib.isEnabled(store, public.definition.modpack) then
                 base(argTable)
                 return
             end

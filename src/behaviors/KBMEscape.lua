@@ -1,3 +1,7 @@
+local internal = QoLInternal
+local option_fns = internal.option_fns
+local hook_fns = internal.hook_fns
+
 table.insert(option_fns,
     {
         type = "checkbox",
@@ -10,7 +14,7 @@ table.insert(option_fns,
 
 table.insert(hook_fns, function()
     modutil.mod.Path.Wrap("IsPauseBlocked", function(base)
-        if not config.KBMEscape or not lib.isEnabled(public.store, public.definition.modpack) then return base() end
+        if not store.read("KBMEscape") or not lib.isEnabled(store, public.definition.modpack) then return base() end
 
         if SessionMapState.HandlingDeath then
             return false

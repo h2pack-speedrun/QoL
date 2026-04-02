@@ -1,3 +1,7 @@
+local internal = QoLInternal
+local option_fns = internal.option_fns
+local hook_fns = internal.hook_fns
+
 table.insert(option_fns,
     {
         type = "checkbox",
@@ -19,7 +23,7 @@ end
 table.insert(hook_fns, function()
     modutil.mod.Path.Wrap("ShowHealthUI", function(baseFunc)
         baseFunc()
-        if config.ShowLocation and lib.isEnabled(public.store, public.definition.modpack) then
+        if store.read("ShowLocation") and lib.isEnabled(store, public.definition.modpack) then
             ShowDepthCounter()
         end
     end)

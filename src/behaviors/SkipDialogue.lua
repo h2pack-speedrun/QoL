@@ -1,3 +1,7 @@
+local internal = QoLInternal
+local option_fns = internal.option_fns
+local hook_fns = internal.hook_fns
+
 table.insert(option_fns,
     {
         type = "checkbox",
@@ -10,7 +14,7 @@ table.insert(option_fns,
 
 table.insert(hook_fns, function()
     modutil.mod.Path.Wrap("PlayTextLines", function(base, source, textLines, args)
-        if not config.SkipDialogue or not lib.isEnabled(public.store, public.definition.modpack) then
+        if not store.read("SkipDialogue") or not lib.isEnabled(store, public.definition.modpack) then
             return base(source, textLines, args)
         end
 

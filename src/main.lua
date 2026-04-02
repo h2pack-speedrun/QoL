@@ -6,19 +6,20 @@ rom = rom
 _PLUGIN = _PLUGIN
 game = rom.game
 modutil = mods['SGG_Modding-ModUtil']
-chalk = mods['SGG_Modding-Chalk']
-reload = mods['SGG_Modding-ReLoad']
+local chalk = mods['SGG_Modding-Chalk']
+local reload = mods['SGG_Modding-ReLoad']
 lib = rom.mods['adamant-ModpackLib']
+local config = chalk.auto('config.lua')
 
-config = chalk.auto('config.lua')
-public.config = config
+QoLInternal = QoLInternal or {}
+local internal = QoLInternal
 
 -- Behavior registration tables — populated by each behaviors/*.lua file via import().
 -- Each behavior file may append to any of these independently:
 --   hook_fns  : sequence of functions                    — called once on load to register hooks
 --   option_fns: sequence of option descriptors           — drives the Framework UI options list
-hook_fns   = {}
-option_fns = {}
+internal.hook_fns = internal.hook_fns or {}
+internal.option_fns = internal.option_fns or {}
 
 local PACK_ID = "speedrun"
 
@@ -43,17 +44,18 @@ public.definition = {
     tooltip      = "Quality of life improvements for speedrunning.",
     default      = true,
     affectsRunData = false,
-    options      = option_fns,
+    options      = internal.option_fns,
 }
 
 public.store = lib.createStore(config, public.definition)
+store = public.store
 
 -- =============================================================================
 -- MODULE LOGIC
 -- =============================================================================
 
 local function registerHooks()
-    for _, fn in ipairs(hook_fns) do fn() end
+    for _, fn in ipairs(internal.hook_fns) do fn() end
 end
 
 -- =============================================================================
@@ -74,6 +76,6 @@ modutil.once_loaded.game(function()
     loader.load(init, init)
 end)
 
-local uiCallback = lib.standaloneUI(public.definition, public.store)
+local uiCallback = lib.standaloneUI(public.definition, store)
 ---@diagnostic disable-next-line: redundant-parameter
 rom.gui.add_to_menu_bar(uiCallback)

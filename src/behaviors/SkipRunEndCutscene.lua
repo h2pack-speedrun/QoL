@@ -1,3 +1,7 @@
+local internal = QoLInternal
+local option_fns = internal.option_fns
+local hook_fns = internal.hook_fns
+
 table.insert(option_fns,
     {
         type = "checkbox",
@@ -10,7 +14,7 @@ table.insert(option_fns,
 
 table.insert(hook_fns, function()
     modutil.mod.Path.Wrap("EndEarlyAccessPresentation", function(baseFunc)
-        if not config.SkipRunEndCutscene or not lib.isEnabled(public.store, public.definition.modpack) then
+        if not store.read("SkipRunEndCutscene") or not lib.isEnabled(store, public.definition.modpack) then
             return baseFunc()
         end
 
