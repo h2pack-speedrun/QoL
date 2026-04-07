@@ -3,10 +3,10 @@ schemaVersion = "0.0.1"
 
 [package]
 namespace = "adamant"
-name = "QoL"
+name = "SpeedrunQoL"
 description = "TODO: description for QoL"
 versionNumber = "0.0.1"
-websiteUrl = "https://github.com/h2pack-speedrun/QoL"
+websiteUrl = "https://github.com/h2pack-speedrun/adamant-SpeedrunQoL"
 containsNsfwContent = false
 
 [package.dependencies]
