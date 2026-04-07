@@ -64,9 +64,9 @@ public.definition = {
     id           = "QoL",
     name         = "Quality of Life",
     category     = "QoL",
-    group        = "QoL",
+    subgroup     = "QoL",
     tooltip      = "Quality of life improvements for speedrunning.",
-    default      = true,
+    default      = dataDefaults.Enabled,
     affectsRunData = false,
 }
 
