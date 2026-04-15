@@ -72,7 +72,7 @@ public.definition = {
 
 public.definition.storage, public.definition.ui = BuildStorageAndUi(internal.option_fns)
 
-public.store = lib.createStore(config, public.definition, dataDefaults)
+public.store = lib.store.create(config, public.definition, dataDefaults)
 store = public.store
 
 -- =============================================================================
@@ -92,7 +92,7 @@ local loader = reload.auto_single()
 local function init()
     import_as_fallback(rom.game)
     registerHooks()
-    if public.definition.affectsRunData and not lib.isCoordinated(public.definition.modpack) then
+    if public.definition.affectsRunData and not lib.coordinator.isCoordinated(public.definition.modpack) then
         SetupRunData()
     end
 end
@@ -101,6 +101,6 @@ modutil.once_loaded.game(function()
     loader.load(init, init)
 end)
 
-local uiCallback = lib.standaloneUI(public.definition, store)
+local uiCallback = lib.coordinator.standaloneUI(public.definition, store)
 ---@diagnostic disable-next-line: redundant-parameter
 rom.gui.add_to_menu_bar(uiCallback)

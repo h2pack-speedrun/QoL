@@ -15,7 +15,7 @@ table.insert(option_fns,
 table.insert(hook_fns, function()
     modutil.mod.Path.Context.Wrap("DeathPresentation", function()
         modutil.mod.Path.Wrap("wait", function(base, duration, tag, persist)
-            if not store.read("SkipDeathCutscene") or not lib.isEnabled(store, public.definition.modpack) then
+            if not store.read("SkipDeathCutscene") or not lib.coordinator.isEnabled(store, public.definition.modpack) then
                 return base(duration, tag, persist)
             end
             return
