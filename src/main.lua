@@ -1,106 +1,84 @@
 local mods = rom.mods
-mods['SGG_Modding-ENVY'].auto()
+mods["SGG_Modding-ENVY"].auto()
 
 ---@diagnostic disable: lowercase-global
 rom = rom
 _PLUGIN = _PLUGIN
 game = rom.game
-modutil = mods['SGG_Modding-ModUtil']
-local chalk = mods['SGG_Modding-Chalk']
-local reload = mods['SGG_Modding-ReLoad']
-lib = rom.mods['adamant-ModpackLib']
+modutil = mods["SGG_Modding-ModUtil"]
+local chalk = mods["SGG_Modding-Chalk"]
+local reload = mods["SGG_Modding-ReLoad"]
+lib = mods["adamant-ModpackLib"]
+
 local dataDefaults = import("config.lua")
-local config = chalk.auto('config.lua')
+local config = chalk.auto("config.lua")
+
+local PACK_ID = "speedrun"
 
 QoLInternal = QoLInternal or {}
 local internal = QoLInternal
 
--- Behavior registration tables — populated by each behaviors/*.lua file via import().
--- Each behavior file may append to any of these independently:
---   hook_fns  : sequence of functions                    — called once on load to register hooks
---   option_fns: sequence of option descriptors           — drives the Framework UI options list
-internal.hook_fns = internal.hook_fns or {}
-internal.option_fns = internal.option_fns or {}
-
-local PACK_ID = "speedrun"
-
-local function BuildStorageAndUi(options)
-    local storage = {}
-    local ui = {}
-    for _, option in ipairs(options) do
-        if option.type == "checkbox" then
-            table.insert(storage, {
-                type = "bool",
-                alias = option.configKey,
-                configKey = option.configKey,
-            })
-            table.insert(ui, {
-                type = "checkbox",
-                binds = { value = option.configKey },
-                label = option.label,
-                tooltip = option.tooltip,
-            })
-        else
-            error(("Unsupported option type '%s' in %s"):format(tostring(option.type), PACK_ID .. ".QoL"))
-        end
-    end
-    return storage, ui
-end
-
-import 'behaviors/KBMEscape.lua'
-import 'behaviors/ShowLocation.lua'
-import 'behaviors/SkipDeathCutscene.lua'
-import 'behaviors/SkipDialogue.lua'
-import 'behaviors/SkipRunEndCutscene.lua'
-import 'behaviors/SpawnLocation.lua'
-import 'behaviors/VictoryScreen.lua'
-
--- =============================================================================
--- MODULE DEFINITION
--- =============================================================================
-
 public.definition = {
-    modpack      = PACK_ID,
-    id           = "QoL",
-    name         = "Quality of Life",
-    category     = "QoL",
-    subgroup     = "QoL",
-    tooltip      = "Quality of life improvements for speedrunning.",
-    default      = dataDefaults.Enabled,
+    modpack = PACK_ID,
+    id = "QoL",
+    name = "Quality of Life",
+    tooltip = "Quality of life improvements for speedrunning.",
+    default = dataDefaults.Enabled,
     affectsRunData = false,
 }
 
-public.definition.storage, public.definition.ui = BuildStorageAndUi(internal.option_fns)
-
-public.store = lib.store.create(config, public.definition, dataDefaults)
-store = public.store
-
--- =============================================================================
--- MODULE LOGIC
--- =============================================================================
+public.store = nil
+store = nil
+internal.standaloneUi = nil
 
 local function registerHooks()
-    for _, fn in ipairs(internal.hook_fns) do fn() end
+    if internal.RegisterHooks then
+        internal.RegisterHooks()
+    end
+
+    public.DrawTab = internal.DrawTab
+    -- public.DrawQuickContent = internal.DrawQuickContent
 end
-
--- =============================================================================
--- Wiring
--- =============================================================================
-
-local loader = reload.auto_single()
 
 local function init()
     import_as_fallback(rom.game)
+
+    import("data.lua")
+    import("ui.lua")
+
+    public.store = lib.store.create(config, public.definition, dataDefaults)
+    store = public.store
+
     registerHooks()
-    if public.definition.affectsRunData and not lib.coordinator.isCoordinated(public.definition.modpack) then
-        SetupRunData()
-    end
+
+    internal.standaloneUi = lib.host.standaloneUI(
+        public.definition,
+        store,
+        store.uiState,
+        {
+            getDrawTab = function()
+                return public.DrawTab
+            end,
+        }
+    )
 end
+
+local loader = reload.auto_single()
 
 modutil.once_loaded.game(function()
     loader.load(init, init)
 end)
 
-local uiCallback = lib.coordinator.standaloneUI(public.definition, store)
 ---@diagnostic disable-next-line: redundant-parameter
-rom.gui.add_to_menu_bar(uiCallback)
+rom.gui.add_imgui(function()
+    if internal.standaloneUi and internal.standaloneUi.renderWindow then
+        internal.standaloneUi.renderWindow()
+    end
+end)
+
+---@diagnostic disable-next-line: redundant-parameter
+rom.gui.add_to_menu_bar(function()
+    if internal.standaloneUi and internal.standaloneUi.addMenuBar then
+        internal.standaloneUi.addMenuBar()
+    end
+end)
