@@ -27,40 +27,33 @@ public.definition = {
     affectsRunData = false,
 }
 
-public.store = nil
-store = nil
+public.host = nil
+local store
+local session
 internal.standaloneUi = nil
-
-local function registerHooks()
-    if internal.RegisterHooks then
-        internal.RegisterHooks()
-    end
-
-    public.DrawTab = internal.DrawTab
-    -- public.DrawQuickContent = internal.DrawQuickContent
-end
 
 local function init()
     import_as_fallback(rom.game)
 
     import("data.lua")
+    import("logic.lua")
     import("ui.lua")
 
-    public.store = lib.store.create(config, public.definition, dataDefaults)
-    store = public.store
+    store, session = lib.createStore(config, public.definition, dataDefaults)
+    internal.store = store
 
-    registerHooks()
+    if internal.RegisterHooks then
+        internal.RegisterHooks()
+    end
 
-    internal.standaloneUi = lib.host.standaloneUI(
-        public.definition,
-        store,
-        store.uiState,
-        {
-            getDrawTab = function()
-                return public.DrawTab
-            end,
-        }
-    )
+    public.host = lib.createModuleHost({
+        definition = public.definition,
+        store = store,
+        session = session,
+        drawTab = internal.DrawTab,
+        -- drawQuickContent = internal.DrawQuickContent,
+    })
+    internal.standaloneUi = lib.standaloneHost(public.host)
 end
 
 local loader = reload.auto_single()

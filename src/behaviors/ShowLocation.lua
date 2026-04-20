@@ -23,7 +23,7 @@ end
 table.insert(hook_fns, function()
     modutil.mod.Path.Wrap("ShowHealthUI", function(baseFunc)
         baseFunc()
-        if store.read("ShowLocation") and lib.coordinator.isEnabled(store, public.definition.modpack) then
+        if internal.store.read("ShowLocation") and lib.isModuleEnabled(internal.store, public.definition.modpack) then
             ShowDepthCounter()
         end
     end)

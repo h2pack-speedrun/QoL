@@ -32,10 +32,4 @@ import("behaviors/VictoryScreen.lua")
 
 public.definition.storage = BuildStorage(internal.option_fns)
 
-function internal.RegisterHooks()
-    for _, fn in ipairs(internal.hook_fns) do
-        fn()
-    end
-end
-
 return internal
