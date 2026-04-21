@@ -13,7 +13,7 @@ table.insert(option_fns,
     })
 
 table.insert(hook_fns, function()
-    modutil.mod.Path.Wrap("EndEarlyAccessPresentation", function(baseFunc)
+    lib.hooks.Wrap(internal, "EndEarlyAccessPresentation", function(baseFunc)
         if not internal.store.read("SkipRunEndCutscene") or not lib.isModuleEnabled(internal.store, public.definition.modpack) then
             return baseFunc()
         end

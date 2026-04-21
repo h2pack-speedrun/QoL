@@ -13,7 +13,7 @@ table.insert(option_fns,
     })
 
 table.insert(hook_fns, function()
-    modutil.mod.Path.Wrap("IsPauseBlocked", function(base)
+    lib.hooks.Wrap(internal, "IsPauseBlocked", function(base)
         if not internal.store.read("KBMEscape") or not lib.isModuleEnabled(internal.store, public.definition.modpack) then return base() end
 
         if SessionMapState.HandlingDeath then

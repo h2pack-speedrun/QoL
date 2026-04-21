@@ -21,7 +21,7 @@ local function ShowDepthCounter()
 end
 
 table.insert(hook_fns, function()
-    modutil.mod.Path.Wrap("ShowHealthUI", function(baseFunc)
+    lib.hooks.Wrap(internal, "ShowHealthUI", function(baseFunc)
         baseFunc()
         if internal.store.read("ShowLocation") and lib.isModuleEnabled(internal.store, public.definition.modpack) then
             ShowDepthCounter()

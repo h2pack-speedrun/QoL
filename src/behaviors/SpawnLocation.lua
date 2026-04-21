@@ -13,8 +13,8 @@ table.insert(option_fns,
     })
 
 table.insert(hook_fns, function()
-    modutil.mod.Path.Context.Wrap("KillHero", function(_, _, _)
-        modutil.mod.Path.Wrap("LoadMap", function(base, argTable)
+    lib.hooks.Context.Wrap(internal, "KillHero", function(_, _, _)
+        lib.hooks.Wrap(internal, "LoadMap", function(base, argTable)
             if not internal.store.read("SpawnLocation") or not lib.isModuleEnabled(internal.store, public.definition.modpack) then
                 base(argTable)
                 return
