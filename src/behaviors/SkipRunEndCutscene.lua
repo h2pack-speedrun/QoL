@@ -14,7 +14,7 @@ table.insert(option_fns,
 
 table.insert(hook_fns, function()
     lib.hooks.Wrap(internal, "EndEarlyAccessPresentation", function(baseFunc)
-        if not internal.store.read("SkipRunEndCutscene") or not lib.isModuleEnabled(internal.store, public.definition.modpack) then
+        if not internal.store.read("SkipRunEndCutscene") or not lib.isModuleEnabled(internal.store, internal.PACK_ID) then
             return baseFunc()
         end
 

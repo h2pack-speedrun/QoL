@@ -15,7 +15,7 @@ table.insert(option_fns,
 table.insert(hook_fns, function()
     lib.hooks.Context.Wrap(internal, "DeathPresentation", function()
         lib.hooks.Wrap(internal, "wait", function(base, duration, tag, persist)
-            if not internal.store.read("SkipDeathCutscene") or not lib.isModuleEnabled(internal.store, public.definition.modpack) then
+            if not internal.store.read("SkipDeathCutscene") or not lib.isModuleEnabled(internal.store, internal.PACK_ID) then
                 return base(duration, tag, persist)
             end
             return

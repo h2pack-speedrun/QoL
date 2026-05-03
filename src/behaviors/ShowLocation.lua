@@ -23,7 +23,7 @@ end
 table.insert(hook_fns, function()
     lib.hooks.Wrap(internal, "ShowHealthUI", function(baseFunc)
         baseFunc()
-        if internal.store.read("ShowLocation") and lib.isModuleEnabled(internal.store, public.definition.modpack) then
+        if internal.store.read("ShowLocation") and lib.isModuleEnabled(internal.store, internal.PACK_ID) then
             ShowDepthCounter()
         end
     end)
